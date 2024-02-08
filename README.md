@@ -19,7 +19,6 @@ local Tabs = {
 
 local Options = Fluent.Options
 
--- ดึงข้อมูลผู้เล่นจากเซิร์ฟเวอร์
 local playersInServer = {}
 for _, player in pairs(game.Players:GetPlayers()) do
     table.insert(playersInServer, player.Name)
@@ -47,12 +46,8 @@ end)
 local Toggle = Tabs.General:AddToggle("Bring Players", { Title = "Bring Players", Default = false })
 
 Toggle:OnChanged(function(on)
-    print("Toggle changed:", Options.MyToggle.Value)
-    
-    -- เมื่อ Toggle ถูกเปลี่ยน
     if on then
         while wait() do
-            -- ลูป CFrame ของผู้เล่นที่ถูกเลือก
             for _, playerName in ipairs(selectedPlayers) do
                 local player = game.Players:FindFirstChild(playerName)
                 if player then
