@@ -39,16 +39,27 @@ local Toggle = Tabs.General:AddToggle("Bring Players", { Title = "Bring Players"
 Toggle:OnChanged(function(on)
   if on then
     local selectedPlayers = MultiDropdown:GetValue() -- ดึงรายชื่อผู้เล่นที่ถูกเลือกใน MultiDropdown
+    local offset = 2 -- ระยะห่างระหว่างผู้เล่นกับผู้ใช้
+    local playerPositions = {} -- เก็บตำแหน่งของผู้เล่น
 
+    -- เก็บตำแหน่งของผู้เล่นก่อนเทเลพอร์ต
     for _, playerName in ipairs(selectedPlayers) do
       local player = game.Players:FindFirstChild(playerName)
       if player then
-        player.Character:SetPrimaryPartCFrame(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2))
+        table.insert(playerPositions, player.Character.HumanoidRootPart.CFrame)
+      end
+    end
+
+    -- เทเลพอร์ตผู้เล่นไปยังตำแหน่งที่อยู่ข้างหน้าผู้ใช้ ห่าง 2 ตามจำนวนผู้เล่นที่เลือก
+    for i, playerName in ipairs(selectedPlayers) do
+      local player = game.Players:FindFirstChild(playerName)
+      if player then
+        player.Character:SetPrimaryPartCFrame(playerPositions[i] * CFrame.new(0, offset, 0))
+        offset = offset + 2
       end
     end
   end
 end)
-
 
 Options.MyToggle:SetValue(false)
 
