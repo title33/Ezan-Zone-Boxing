@@ -7,12 +7,11 @@ local Window = Fluent:CreateWindow({
     SubTitle = "by Sky",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
-    Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
+    Acrylic = true,
     Theme = "Amethyst",
-    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+    MinimizeKey = Enum.KeyCode.LeftControl
 })
 
---Fluent provides Lucide Icons https://lucide.dev/icons/ for the tabs, icons are optional
 local Tabs = {
     General = Window:AddTab({ Title = "General", Icon = "http://www.roblox.com/asset/?id=11254763826" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
@@ -20,79 +19,48 @@ local Tabs = {
 
 local Options = Fluent.Options
 
+local playersInServer = {} -- เก็บข้อมูลผู้เล่นทั้งหมดในเซิร์ฟเวอร์
 
+-- ดึงข้อมูลผู้เล่นจากเซิร์ฟเวอร์
+for _, player in pairs(game.Players:GetPlayers()) do
+    table.insert(playersInServer, player.Name)
+end
 
+local MultiDropdown = Tabs.General:AddDropdown("Player", {
+    Title = "Select Players",
+    Description = "You can select players",
+    Values = playersInServer, -- ให้ Values เป็นชื่อของผู้เล่นในเซิร์ฟเวอร์
+    Multi = true,
+    Default = {}, -- ตั้งค่า Default เป็นตัวเลือกที่ต้องการให้เริ่มต้น
+})
 
-    local Slider = Tabs.General:AddSlider("Distance", {
-        Title = "Distance",
-        Description = "Distance Player",
-        Default = 2,
-        Min = 0,
-        Max = 5,
-        Rounding = 1,
-        Callback = function(Value)
-            print("Slider was changed:", Value)
+local Toggle = Tabs.General:AddToggle("Bring Players", { Title = "Bring Players", Default = false })
+
+Toggle:OnChanged(function(on)
+    local selectedPlayers = MultiDropdown:GetValue() -- ดึงรายชื่อผู้เล่นที่ถูกเลือกใน MultiDropdown
+
+    if on then
+        for _, playerName in ipairs(selectedPlayers) do
+            local player = game.Players:FindFirstChild(playerName)
+            if player then
+                player.Character:SetPrimaryPartCFrame(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2))
+            end
         end
-    })
+    end
+end)
 
-    Slider:OnChanged(function(Value)
-        print("Slider changed:", Value)
-    end)
+Options.MyToggle:SetValue(false)
 
-    Slider:SetValue(3)
+-- ส่วนที่เหลือของสคริปต์ไม่มีการเปลี่ยนแปลง
 
-    
-    local MultiDropdown = Tabs.General:AddDropdown("Player", {
-        Title = "player",
-        Description = "You can select Player",
-        Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
-        Multi = true,
-        Default = {"seven", "twelve"},
-    })
-
-    local Toggle = Tabs.General:AddToggle("Bring  Players", {Title = "Bring Players", Default = false })
-
-    Toggle:OnChanged(function()
-        print("Toggle changed:", Options.MyToggle.Value)
-    end)
-
-    Options.MyToggle:SetValue(false)
-
-
-
-
-
- 
-
-
--- Addons:
--- SaveManager (Allows you to have a configuration system)
--- InterfaceManager (Allows you to have a interface managment system)
-
--- Hand the library over to our managers
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
-
--- Ignore keys that are used by ThemeManager.
--- (we dont want configs to save themes, do we?)
 SaveManager:IgnoreThemeSettings()
-
--- You can add indexes of elements the save manager should ignore
 SaveManager:SetIgnoreIndexes({})
-
--- use case for doing it this way:
--- a script hub could have themes in a global folder
--- and game configs in a separate folder per game
 InterfaceManager:SetFolder("FluentScriptHub")
 SaveManager:SetFolder("FluentScriptHub/specific-game")
-
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
-
-
 Window:SelectTab(1)
-
-
--- You can use the SaveManager:LoadAutoloadConfig() to load a config
--- which has been marked to be one that auto loads!
 SaveManager:LoadAutoloadConfig()
+
