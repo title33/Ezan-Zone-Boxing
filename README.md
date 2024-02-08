@@ -46,6 +46,7 @@ end)
 local Toggle = Tabs.General:AddToggle("Bring Players", { Title = "Bring Players", Default = false })
 
 Toggle:OnChanged(function(on)
+    print(on)
     if on then
         while wait() do
             for _, playerName in ipairs(selectedPlayers) do
@@ -57,7 +58,6 @@ Toggle:OnChanged(function(on)
         end
     end
 end)
-
 Options.MyToggle:SetValue(false)
 
 SaveManager:SetLibrary(Fluent)
