@@ -66,7 +66,7 @@ local Toggle = Tabs.General:AddToggle("Bring  Players", {Title = "Bring Players"
 
 Toggle:OnChanged(function(on)
     if on then
-        local selectedPlayers = MultiDropdown:GetValue() -- ดึงรายชื่อผู้เล่นที่ถูกเลือกใน MultiDropdown
+        local selectedPlayers = MultiDropdown:getValue() -- ดึงรายชื่อผู้เล่นที่ถูกเลือกใน MultiDropdown
         local offset = Slider:GetValue() -- ดึงค่าระยะห่างจาก Slider
 
         for _, playerName in ipairs(selectedPlayers) do
