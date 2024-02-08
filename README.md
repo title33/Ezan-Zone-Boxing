@@ -35,6 +35,13 @@ local MultiDropdown = Tabs.General:AddDropdown("Player", {
     Default = {}, -- ตั้งค่า Default เป็นตัวเลือกที่ต้องการให้เริ่มต้น
 })
 
+MultiDropdown:OnChanged(function(Value)
+    local Values = {}
+    for Value, State in next, Value do
+        table.insert(Values, Value)
+    end
+    print("Mutlidropdown changed:", table.concat(Values, ", "))
+end)
 
 local Slider = Tabs.General:AddSlider("Distance", {
     Title = "Distance",
