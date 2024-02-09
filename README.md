@@ -21,7 +21,9 @@ local Options = Fluent.Options
 
 local playersInServer = {}
 for _, player in pairs(game.Players:GetPlayers()) do
-    table.insert(playersInServer, player.Name)
+    if player then
+        table.insert(playersInServer, player.Name)
+    end
 end
 
 local MultiDropdown = Tabs.General:AddDropdown("Player", {
@@ -34,21 +36,23 @@ local MultiDropdown = Tabs.General:AddDropdown("Player", {
 
 local selectedPlayers = {}
 
-MultiDropdown:OnChanged(function(Value)
-    selectedPlayers = Value
-    local Values = {}
-    for _, PlayerName in ipairs(Value) do
-        table.insert(Values, PlayerName)
+MultiDropdown:OnChanged(function(selectedNames)
+    for _, playerName in ipairs(selectedNames) do
+        if playerName then
+            local player = game.Players:FindFirstChild(playerName)
+            if player then
+                selectedPlayers[playerName] = true
+            end
+        end
     end
-    print("MultiDropdown changed:", table.concat(Values, ", "))
 end)
 
 local Toggle = Tabs.General:AddToggle("Bring Players", { Title = "Bring Players", Default = false })
 
 Toggle:OnChanged(function(on)
     if on then
-        while wait() do
-            for _, playerName in ipairs(selectedPlayers) do
+        for _, playerName in ipairs(selectedPlayers) do
+            if playerName then
                 local player = game.Players:FindFirstChild(playerName)
                 if player then
                     player.Character:SetPrimaryPartCFrame(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -3, 0))
