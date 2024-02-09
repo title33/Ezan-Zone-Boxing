@@ -46,7 +46,6 @@ end)
 local Toggle = Tabs.General:AddToggle("Bring Players", { Title = "Bring Players", Default = false })
 
 Toggle:OnChanged(function(on)
-    print(on)
     if on then
         while wait() do
             for _, playerName in ipairs(selectedPlayers) do
@@ -58,7 +57,8 @@ Toggle:OnChanged(function(on)
         end
     end
 end)
-Options.MyToggle:SetValue(false)
+
+Toggle:SetValue(false)
 
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
@@ -68,5 +68,5 @@ InterfaceManager:SetFolder("FluentScriptHub")
 SaveManager:SetFolder("FluentScriptHub/specific-game")
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
-Window:SelectTab(1)
+Window:SelectTab(0.5)
 SaveManager:LoadAutoloadConfig()
