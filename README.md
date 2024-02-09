@@ -58,7 +58,7 @@ Toggle:OnChanged(function(on)
     end
 end)
 
-Toggle:SetValue(false)
+Options.Toggle:SetValue(false)
 
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
@@ -68,5 +68,5 @@ InterfaceManager:SetFolder("FluentScriptHub")
 SaveManager:SetFolder("FluentScriptHub/specific-game")
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
-Window:SelectTab(0.5)
+Window:SelectTab(1)
 SaveManager:LoadAutoloadConfig()
